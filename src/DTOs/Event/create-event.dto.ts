@@ -23,6 +23,5 @@ export class CreateEventDto {
     @IsInt()
     participents_needed: number;
 
-    @IsInt()
-    createdBy: number;
+    // createdBy is removed - it will be set from authenticated user
 }
