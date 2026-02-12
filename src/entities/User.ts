@@ -1,8 +1,10 @@
 import {
     Column,
     CreateDateColumn,
-    Entity, PrimaryGeneratedColumn, UpdateDateColumn
+    Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn
 } from "typeorm";
+
+import { Event } from './Event'
 
 @Entity('users')
 export class User {
@@ -26,6 +28,9 @@ export class User {
 
     @Column()
     age: number;
+
+    @OneToMany(() => Event, (event) => event.createdBy)
+    events: Event[]
 
     @CreateDateColumn()
     createdAt: Date;

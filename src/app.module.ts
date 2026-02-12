@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
+import { EventModule } from './modules/event/event.module';
 
 
 @Module({
@@ -15,7 +16,7 @@ import { UserModule } from './modules/user/user.module';
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres', 
+        type: 'postgres',
         host: configService.get('DB_HOST'),
         port: configService.get<number>('DB_PORT'),
         username: configService.get('DB_USERNAME'),
@@ -26,7 +27,9 @@ import { UserModule } from './modules/user/user.module';
       })
     }),
 
-    UserModule
+    UserModule,
+
+    EventModule
   ],
   controllers: [AppController],
   providers: [AppService],
