@@ -21,4 +21,6 @@ export class CreateUserDto {
     @Min(0)
     age: number;
 
+    @IsString()
+    mobile_number: string;
 }

@@ -49,6 +49,7 @@ export class EventService {
                 start_date: true,
                 end_date: true,
                 participents_needed: true,
+                location: true,
                 createdAt: true,
                 updatedAt: true,
                 createdBy: {
@@ -87,6 +88,7 @@ export class EventService {
                 start_date: event.start_date,
                 end_date: event.end_date,
                 participents_needed: event.participents_needed,
+                location: event.location,
                 createdAt: event.createdAt,
                 createdBy: {
                     id: event.createdBy.id,

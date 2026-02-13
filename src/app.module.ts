@@ -5,6 +5,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { EventModule } from './modules/event/event.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 
 @Module({
@@ -12,6 +14,11 @@ import { EventModule } from './modules/event/event.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+
+    ThrottlerModule.forRoot([{
+      ttl: 8000, // 8 seconds in milliseconds
+      limit: 2,  // 2 requests per ttld
+    }]),
 
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -32,6 +39,12 @@ import { EventModule } from './modules/event/event.module';
     EventModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule { }

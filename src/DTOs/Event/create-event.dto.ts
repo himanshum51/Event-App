@@ -23,5 +23,9 @@ export class CreateEventDto {
     @IsInt()
     participents_needed: number;
 
+    @IsString()
+    @IsNotEmpty()
+    location: string;
+
     // createdBy is removed - it will be set from authenticated user
 }
