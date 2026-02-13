@@ -32,6 +32,9 @@ export class User {
     @OneToMany(() => Event, (event) => event.createdBy)
     events: Event[]
 
+    @Column()
+    mobile_number: string;
+
     @CreateDateColumn()
     createdAt: Date;
 

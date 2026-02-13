@@ -23,7 +23,7 @@ import { EventModule } from './modules/event/event.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
       })
     }),
 

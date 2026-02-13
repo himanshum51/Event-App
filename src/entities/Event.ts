@@ -32,6 +32,9 @@ export class Event {
     @ManyToOne(() => User, (user) => user.events)
     createdBy: User;
 
+    @Column()
+    location: string;
+
     @CreateDateColumn()
     createdAt: Date;
 
