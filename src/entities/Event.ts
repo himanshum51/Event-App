@@ -26,13 +26,19 @@ export class Event {
     end_date: Date;
 
     @Column({ type: 'int' })
-    participents_needed: number
+    participents_needed: number;
 
     @ManyToOne(() => User, (user) => user.events)
     createdBy: User;
 
     @Column()
     location: string;
+
+    @Column({ type: 'varchar', nullable: true })
+    image: string | null;
+
+    @Column({ type: 'json', nullable: true })
+    files: string[] | null;
 
     @CreateDateColumn()
     createdAt: Date;

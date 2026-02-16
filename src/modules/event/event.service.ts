@@ -16,8 +16,12 @@ export class EventService {
         private userRepository: Repository<User>,
     ) { }
 
-    // CREATE - Only authenticated users can create events
-    async create(createEventDto: CreateEventDto, user: any) {
+    // CREATE - Only authenticated users can create events with optional files
+    async create(
+        createEventDto: CreateEventDto,
+        user: any,
+        files?: { image?: Express.Multer.File[], files?: Express.Multer.File[] }
+    ) {
         const userId = user.id || user.userId;
 
         const userEntity = await this.userRepository.findOne({
@@ -28,9 +32,23 @@ export class EventService {
             throw new NotFoundException('User not found');
         }
 
+        // Process uploaded files
+        let imagePath: string | null = null;
+        let filePaths: string[] = [];
+
+        if (files?.image && files.image.length > 0) {
+            imagePath = files.image[0].path.replace(/\\/g, '/');
+        }
+
+        if (files?.files && files.files.length > 0) {
+            filePaths = files.files.map(file => file.path.replace(/\\/g, '/'));
+        }
+
         const event = this.eventRepository.create({
             ...createEventDto,
             createdBy: userEntity,
+            image: imagePath,
+            files: filePaths.length > 0 ? filePaths : null,
         });
 
         return await this.eventRepository.save(event);
@@ -50,6 +68,8 @@ export class EventService {
                 end_date: true,
                 participents_needed: true,
                 location: true,
+                image: true,
+                files: true,
                 createdAt: true,
                 updatedAt: true,
                 createdBy: {
@@ -89,6 +109,8 @@ export class EventService {
                 end_date: event.end_date,
                 participents_needed: event.participents_needed,
                 location: event.location,
+                image: event.image,
+                files: event.files,
                 createdAt: event.createdAt,
                 createdBy: {
                     id: event.createdBy.id,
@@ -100,8 +122,13 @@ export class EventService {
         }
     }
 
-    // UPDATE - Only the creator can update their event
-    async update(id: number, updateEventDto: UpdateEventDto, user: any) {
+    // UPDATE - Only the creator can update their event with optional files
+    async update(
+        id: number,
+        updateEventDto: UpdateEventDto,
+        user: any,
+        files?: { image?: Express.Multer.File[], files?: Express.Multer.File[] }
+    ) {
         const userId = user.id || user.userId;
 
         const event = await this.eventRepository.findOne({
@@ -117,7 +144,20 @@ export class EventService {
             throw new ForbiddenException('You can only update your own events');
         }
 
+        // Update event data
         Object.assign(event, updateEventDto);
+
+        // Handle new image upload
+        if (files?.image && files.image.length > 0) {
+            event.image = files.image[0].path.replace(/\\/g, '/');
+        }
+
+        // Handle new files upload (append to existing files)
+        if (files?.files && files.files.length > 0) {
+            const newFilePaths = files.files.map(file => file.path.replace(/\\/g, '/'));
+            const existingFiles = event.files || [];
+            event.files = [...existingFiles, ...newFilePaths];
+        }
 
         return await this.eventRepository.save(event);
     }

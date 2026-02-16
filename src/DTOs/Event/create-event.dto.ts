@@ -1,4 +1,5 @@
-import { IsDateString, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsString, IsOptional, IsInt } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateEventDto {
     @IsString()
@@ -9,10 +10,10 @@ export class CreateEventDto {
     description: string;
 
     @IsDateString()
-    start_date: Date;
+    start_date: string; 
 
     @IsDateString()
-    end_date: Date;
+    end_date: string;   
 
     @IsString()
     start_time: string;
@@ -20,6 +21,7 @@ export class CreateEventDto {
     @IsString()
     end_time: string;
 
+    @Type(() => Number)
     @IsInt()
     participents_needed: number;
 
@@ -27,5 +29,9 @@ export class CreateEventDto {
     @IsNotEmpty()
     location: string;
 
-    // createdBy is removed - it will be set from authenticated user
+    @IsOptional()
+    image?: any;
+
+    @IsOptional()
+    files?: any;
 }
