@@ -17,7 +17,7 @@ import { APP_GUARD } from '@nestjs/core';
 
     ThrottlerModule.forRoot([{
       ttl: 8000, // 8 seconds in milliseconds
-      limit: 2,  // 2 requests per ttld
+      limit: 10,  // 2 requests per ttld
     }]),
 
     TypeOrmModule.forRootAsync({
